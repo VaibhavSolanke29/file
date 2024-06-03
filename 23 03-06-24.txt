@@ -1,0 +1,90 @@
+Monday 3-6-24
+
+[8:53 AM] yaswanthadapakala@gmail.com (Unverified)
+good morning friends
+[8:54 AM] yaswanthadapakala@gmail.com (Unverified)
+Sir will be joining in 10-15 minutes 
+[8:54 AM] gowtham.polamreddy143@gmail.com (Unverified)
+Okay yaswanth
+[8:54 AM] yaswanthadapakala@gmail.com (Unverified)
+due to some network issue 
+[8:55 AM] logeshkv693@gmail.com (Unverified)
+ok yaswanth
+[9:02 AM] Chethan Naik M K
+Team has trainer joined?
+[9:02 AM] yaswanthadapakala@gmail.com (Unverified)
+Chethan Naik M K OUr Trainer said 
+[9:03 AM] yaswanthadapakala@gmail.com (Unverified)
+due to some network issue
+[9:03 AM] yaswanthadapakala@gmail.com (Unverified)
+he will be joining us in 10-15 minutes 
+[9:03 AM] yaswanthadapakala@gmail.com (Unverified)
+back again
+[9:04 AM] yaswanthadapakala@gmail.com (Unverified)
+Chethan Naik M K sir
+[9:06 AM] Unknown User
+Hello all, I'm from RPS support team. Any issue regarding the CLOUD LABS please ping in chat box, or please drop mail to ngasupport@rpsconsulting.in. NOTE: Please DO NOT SHUTDOWN VM, Please note down your cloud passwords
+
+
+[10:54 AM] Radha Tinani
+ 
+One Stop Solution Email Address:
+ngasupport@rpsconsulting.in
+[11:01 AM] Amarnath (Unverified)
+Hi Chetan
+[11:11 AM] Chethan Naik M K
+Hi Team,
+
+Please click on to this link and fill the feedback by today itself
+
+Thanks!
+[11:11 AM] Chethan Naik M K
+https://survey.zohopublic.com/zs/2VD4YM
+[11:32 AM] yaswanthadapakala@gmail.com (Unverified)
+hello friends...
+[11:33 AM] yaswanthadapakala@gmail.com (Unverified)
+just now sir informed that, Sir is having power cut and sir's laptop power was completely drained out
+[11:34 AM] yaswanthadapakala@gmail.com (Unverified)
+and sir will joining us as early as he gets the power backed up again 
+[11:35 AM] yaswanthadapakala@gmail.com (Unverified)
+until then we have to practice those from the document
+[11:36 AM] yaswanthadapakala@gmail.com (Unverified)
+I hope everyone is ok with that.
+[12:02 PM] yaswanthadapakala@gmail.com (Unverified)
+https://bjpcjp.github.io/pdfs/devops/linux-commands-handbook.pdf
+[12:39 PM] Amarnath (Unverified)
+be back in 5 min, had to take a call
+[12:41 PM] Amarnath (Unverified)
+obj-m += simple_char_dev.o
+ 
+all:
+
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+ 
+clean:
+
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+
+
+[1:01 PM] Amarnath (Unverified)
+sudo apt-get install software-properties-common
+[1:01 PM] Amarnath (Unverified)
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+[1:01 PM] Amarnath (Unverified)
+sudo apt-get update
+
+[1:10 PM] Amarnath (Unverified)
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 20 
+
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 20
+
+command to make default version as 12
+
+
+[1:14 PM] Amarnath (Unverified)
+sudo update alternatives  --config gcc
+
+sudo update alternatives config g++
+
+[1:20 PM] Amarnath (Unverified)
+BeyondCompare
