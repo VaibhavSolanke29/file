@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# Function to display the menu
+display_menu() {
+    echo "Welcome to Our Restaurant!"
+    echo "1. Tiffins"
+    echo "2. Snacks"
+    echo "3. Drinks"
+    echo "4. Main Course"
+    echo "5. Exit"
+}
+
+# Function to display submenu based on category
+display_submenu() {
+    case $1 in
+        1)
+            echo "Tiffins Menu:"
+            echo "1. Idli - $10"
+            echo "2. Dosa - $12"
+            ;;
+        2)
+            echo "Snacks Menu:"
+            echo "1. Samosa - $8"
+            echo "2. Pakora - $7"
+            ;;
+        3)
+            echo "Drinks Menu:"
+            echo "1. Coke - $5"
+            echo "2. Lemonade - $6"
+            ;;
+        4)
+            echo "Main Course Menu:"
+            echo "1. Biryani - $15"
+            echo "2. Butter Chicken - $18"
+            ;;
+        *)
+            echo "Invalid option"
+            ;;
+    esac
+}
+
+# Function to calculate total bill
+calculate_bill() {
+    local total=0
+    for item in "${order[@]}"; do
+        total=$((total + item))
+    done
+    echo "Total Bill: $total"
+}
+
+# Main script
+while true; do
+    display_menu
+    read -p "Enter your choice: " choice
+    case $choice in
+        1|2|3|4)
+            display_submenu $choice
+            read -p "Enter your choice: " sub_choice
+            case $sub_choice in
+                1)
+                    order+=10
+                    ;;
+                2)
+                    order+=12
+                    ;;
+                *)
+                    echo "Invalid choice"
+                    ;;
+            esac
+            ;;
+        5)
+            calculate_bill
+            break
+            ;;
+        *)
+            echo "Invalid choice"
+            ;;
+    esac
+done
