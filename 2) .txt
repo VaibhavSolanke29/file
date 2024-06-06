@@ -1,0 +1,56 @@
+1) 
+Create a script to manage user accounts. The script should be able to add users, delte users, and list all user
+
+#!/bin/bash
+
+# Function to add a new user
+add_user() {
+    read -p "Enter username: " username
+    read -sp "Enter password: " password
+    echo ""
+    # Check if user already exists
+    if id "$username" &>/dev/null; then
+        echo "User $username already exists."
+    else
+        # Create user
+        sudo useradd -m -s /bin/bash "$username"
+        echo "$username:$password" | sudo chpasswd
+        echo "User $username created successfully."
+    fi
+}
+
+# Function to delete a user
+delete_user() {
+    read -p "Enter username to delete: " username
+    # Check if user exists
+    if id "$username" &>/dev/null; then
+        sudo userdel -r "$username"
+        echo "User $username deleted successfully."
+    else
+        echo "User $username does not exist."
+    fi
+}
+
+# Function to list all users
+list_users() {
+    echo "List of all users:"
+    cut -d: -f1 /etc/passwd
+}
+
+# Main menu
+while :
+do
+    echo "User Account Management"
+    echo "1. Add User"
+    echo "2. Delete User"
+    echo "3. List All Users"
+    echo "4. Exit"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) add_user ;;
+        2) delete_user ;;
+        3) list_users ;;
+        4) echo "Exiting..."; exit ;;
+        *) echo "Invalid choice. Please enter a valid option." ;;
+    esac
+done
