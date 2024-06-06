@@ -1,0 +1,43 @@
+#!/bin/bash
+
+USER_FILE="users.txt"
+
+while true; do
+    echo -e "\nUser Account Management System"
+    echo "1. Add User"
+    echo "2. Delete User"
+    echo "3. List Users"
+    echo "4. Quit"
+
+    read -p "Enter your choice: " choice
+
+    if [ "$choice" == "1" ]; then
+        read -p "Enter username: " username
+        if grep -Fxq "$username" "$USER_FILE"; then
+            echo "User '$username' already exists."
+        else
+            echo "$username" >> "$USER_FILE"
+            echo "User '$username' added successfully."
+        fi
+    elif [ "$choice" == "2" ]; then
+        read -p "Enter username to delete: " username
+        if grep -Fxq "$username" "$USER_FILE"; then
+            sed -i "/^$username\$/d" "$USER_FILE"
+            echo "User '$username' deleted successfully."
+        else
+            echo "User '$username' does not exist."
+        fi
+    elif [ "$choice" == "3" ]; then
+        if [ -s "$USER_FILE" ]; then
+            echo "List of users:"
+            cat "$USER_FILE"
+        else
+            echo "No users found."
+        fi
+    elif [ "$choice" == "4" ]; then
+        echo "Exiting program..."
+        exit 0
+    else
+        echo "Invalid choice. Please enter a valid option."
+    fi
+done
