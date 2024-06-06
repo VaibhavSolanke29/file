@@ -1,0 +1,44 @@
+backup() {
+  local dir=$1
+  local backup_name=$2
+  local compression=$3
+
+  # Check if backup file already exists, and if so, create a unique name
+  if [ -z "$backup_name" ]; then
+    backup_name="backup_$(date +%Y%m%d).tar.gz"
+  fi
+
+  if [ -e "$backup_name" ]; then
+    local count=1
+    local base_name="${backup_name%.*}"
+    local ext="${backup_name##*.}"
+    while [ -e "${base_name}_$count.$ext" ]; do
+      count=$((count + 1))
+    done
+    backup_name="${base_name}_$count.$ext"
+  fi
+
+  if [ "$compression" == "bzip2" ]; then
+    tar -cvjf "$backup_name" "$dir"
+  else
+    tar -cvzf "$backup_name" "$dir"
+  fi
+
+  echo "Backup of $dir completed as $backup_name using $compression."
+}
+
+echo "Enter the directory to backup:"
+read -r dir
+
+echo "Enter the backup name (press Enter to use default 'backup_DATE.tar.gz'):"
+read -r backup_name
+
+echo "Enter the compression type (gzip or bzip2, press Enter to use default 'gzip'):"
+read -r compression
+
+# If no directory is provided, exit with usage information
+if [ -z "$dir" ]; then
+  echo "Usage: $0 directory [backup_name] [compression]"
+  exit 1
+fi
+backup "$dir" "$backup_name" "$compression"
