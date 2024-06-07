@@ -1,0 +1,41 @@
+[9:52 AM] Amarnath (Unverified)
+now write your c code
+ 
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+ 
+static int_init hello_init(void){
+   printk(KERN_INFO "Hello worlkd")'
+   returon 0;
+}
+ 
+static void __exit hello_exit(void_ {
+   printk(KERN_INFO "Goodbye, worlkd\n");
+}
+ 
+module_init(hello_init);
+module_exit(hello_exit);
+ 
+Module_LICENSE("GPl");
+MODULE_AUTHOR("give your name");
+MODULE_DESCRIPTION("Hello World Kernel Module");
+MODULE_VERSION("1.0");
+[9:53 AM] Amarnath (Unverified)
+you know how to create a make file?
+[9:53 AM] Amarnath (Unverified)
+content of make file?
+[9:55 AM] Amarnath (Unverified)
+obj-m += hello_world.o
+ 
+all:
+   make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+ 
+clean:
+  make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+ 
+above should be there in makefile
+[9:56 AM] Amarnath (Unverified)
+you can't have the file in mkdir
+[9:59 AM] Amarnath (Unverified)
+Gowtham if you are done, try helping them
