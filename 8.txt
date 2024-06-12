@@ -1,0 +1,40 @@
+/dts-v1/;
+ 
+/ {
+    compatible = "simple,example";
+ 
+    
+    cpus {
+        #address-cells = <1>;
+        #size-cells = <0>;
+ 
+        cpu@0 {
+            device_type = "cpu";
+            compatible = "arm,cortex-a7";
+            reg = <0>;
+        };
+    };
+ 
+  
+    memory {
+        device_type = "memory";
+        reg = <0x80000000 0x4000000>;  /* Start at 0x80000000, 64 MB size */
+    };
+ 
+    
+    leds {
+        compatible = "gpio-leds";
+        led0: led-0 {
+            label = "user-led0";
+            gpios = <&gpio1 17 0>;  /* GPIO controller 1, pin 17 */
+            default-state = "off";
+        };
+    };
+ 
+    /* Define the GPIO controller */
+    gpio1: gpio@01c20800 {
+        compatible = "allwinner,sun4i-a10-gpio";
+        reg = <0x01c20800 0x400>;
+        #gpio-cells = <2>;
+    };
+};
