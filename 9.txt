@@ -1,0 +1,10 @@
+qemu-system-arm \
+  -kernel give the kernel folder location \
+  -cpu arm1176 \
+  -m 256 \
+  -M versatilepb \
+  -dtb example.dtb \
+  -no-reboot \
+  -serial stdio \
+  -append "root=/dev/sda2 panic=1" \
+  -hda raspios.qcow2
