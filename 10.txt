@@ -1,0 +1,1 @@
+qemu-system-arm -kernel kernel-qemu-4.19.50-buster -dtb versatile-pb.dtb -m 256 -M versatilepb -cpu arm1176 -no-reboot -serial stdio -append "root=/dev/sda2 rootfstype=ext4 rw" -hda raspios.qcow2 -display sdl
