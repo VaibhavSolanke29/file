@@ -1,0 +1,112 @@
+#include <linux/module.h>
+#include <linux/fs.h>
+#include <linux/blkdev.h>
+#include <linux/bio.h>
+ 
+#define DEVICE_NAME "my_block"
+#define DEVICE_CAPACITY 1024 // Capacity in sectors (512 bytes per sector)
+ 
+static int major_num = 0;
+static struct request_queue *queue;
+static struct block_device *my_blkdev;
+static unsigned char *dev_data;
+ 
+static int my_open(struct block_device *bdev, fmode_t mode) {
+    pr_info(DEVICE_NAME ": Device opened\n");
+    return 0;
+}
+ 
+static void my_release(struct gendisk *gd, fmode_t mode) {
+    pr_info(DEVICE_NAME ": Device closed\n");
+}
+ 
+static int my_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd, unsigned long arg) {
+    return -ENOTTY; // No ioctls supported
+}
+ 
+static const struct block_device_operations fops = {
+    .owner = THIS_MODULE,
+    .open = my_open,
+    .release = my_release,
+    .ioctl = my_ioctl,
+};
+ 
+static void my_request(struct request_queue *q, struct bio *bio) {
+    struct bio_vec bvec;
+    struct bvec_iter iter;
+    struct bio_vec *bvec_start = bio_iovec(bio);
+    sector_t sector = bio->bi_iter.bi_sector;
+    unsigned int len = 0;
+ 
+    bio_for_each_segment(bvec, bio, iter) {
+        void *buffer = kmap_atomic(bvec.bv_page);
+        void *disk_mem = dev_data + (sector * 512) + bvec.bv_offset;
+        len = bvec.bv_len;
+        if (bio_data_dir(bio) == READ) {
+            memcpy(buffer + bvec.bv_offset, disk_mem, len);
+        } else {
+            memcpy(disk_mem, buffer + bvec.bv_offset, len);
+        }
+        kunmap_atomic(buffer);
+    }
+ 
+    bio_endio(bio);
+}
+ 
+static int __init my_init(void) {
+    major_num = register_blkdev(0, DEVICE_NAME);
+    if (major_num <= 0) {
+        pr_err(DEVICE_NAME ": register_blkdev failed\n");
+        return -EBUSY;
+    }
+ 
+    queue = blk_alloc_queue(GFP_KERNEL);
+    if (!queue) {
+        unregister_blkdev(major_num, DEVICE_NAME);
+        pr_err(DEVICE_NAME ": blk_alloc_queue failed\n");
+        return -ENOMEM;
+    }
+ 
+    blk_queue_make_request(queue, my_request);
+ 
+    my_blkdev = blkdev_get_by_dev(MKDEV(major_num, 0), FMODE_READ | FMODE_WRITE, NULL);
+    if (IS_ERR(my_blkdev)) {
+        pr_err(DEVICE_NAME ": blkdev_get_by_dev failed\n");
+        blk_cleanup_queue(queue);
+        unregister_blkdev(major_num, DEVICE_NAME);
+        return PTR_ERR(my_blkdev);
+    }
+ 
+    dev_data = vmalloc(DEVICE_CAPACITY * 512);
+    if (!dev_data) {
+        blkdev_put(my_blkdev, FMODE_READ | FMODE_WRITE);
+        blk_cleanup_queue(queue);
+        unregister_blkdev(major_num, DEVICE_NAME);
+        pr_err(DEVICE_NAME ": vmalloc failed\n");
+        return -ENOMEM;
+    }
+ 
+    queue_flag_set(QUEUE_FLAG_NONROT, queue);
+    queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, queue);
+    blk_queue_logical_block_size(queue, 512);
+    blk_queue_physical_block_size(queue, 512);
+    blk_queue_max_hw_sectors(queue, 1024);
+ 
+    pr_info(DEVICE_NAME ": Module loaded\n");
+    return 0;
+}
+ 
+static void __exit my_exit(void) {
+    vfree(dev_data);
+    blkdev_put(my_blkdev, FMODE_READ | FMODE_WRITE);
+    blk_cleanup_queue(queue);
+    unregister_blkdev(major_num, DEVICE_NAME);
+    pr_info(DEVICE_NAME ": Module unloaded\n");
+}
+ 
+module_init(my_init);
+module_exit(my_exit);
+ 
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Your Name");
+MODULE_DESCRIPTION("A simple block device driver");
