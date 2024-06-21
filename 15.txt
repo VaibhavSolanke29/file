@@ -1,0 +1,32 @@
+#include <linux/module.h>
+#include <linux/pci.h>
+ 
+static int __init pci_driver_example_init(void)
+{
+    struct pci_dev *pdev = NULL;
+ 
+    for_each_pci_dev(pdev)
+    {
+        char device_name[128];
+ 
+        pci_read_config_byte(pdev, PCI_CLASS_DEVICE, &device_name[0]);
+        pci_read_config_byte(pdev, PCI_CLASS_DEVICE + 1, &device_name[1]);
+ 
+        pr_info("Found PCI device: Vendor ID = %04x, Device ID = %04x, Device Name = %s\n", 
+                pdev->vendor, pdev->device, pdev->dev.kobj.name);
+    }
+ 
+    return 0;
+}
+ 
+static void __exit pci_driver_example_exit(void)
+{
+    pr_info("PCI driver example exited\n");
+}
+ 
+module_init(pci_driver_example_init);
+module_exit(pci_driver_example_exit);
+ 
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Your Name");
+MODULE_DESCRIPTION("PCI Driver Example with Device Names");
