@@ -1,0 +1,75 @@
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/list.h>
+#include <linux/slab.h>
+#include <linux/atomic.h>
+#include <linux/bitops.h>
+ 
+ 
+struct device {
+    struct list_head list;
+    u32 ID; 
+    atomic_t counter;
+    unsigned long status;
+};
+static LIST_HEAD(device_list);
+#define STATUS_ACTIVE 0
+#define STATUS_ERROR 1
+ 
+static void add_device(u32 ID){
+	struct device *dev;
+	dev = kmalloc(sizeof(*dev),GFP_KERNEL);
+	if(!dev){
+		printk(KERN_ERR " Failed to allocate memory for device \n");
+		return;
+	}
+	dev->ID = ID;
+	atomic_set(&dev->counter,0);
+	dev->status = 0;
+	list_add(&dev->list,&device_list);
+	printk(KERN_INFO " Added device with ID : %u\n",ID);
+}
+ 
+static void update_device(struct device *dev ) {
+	atomic_inc (&dev->counter);
+	set_bit(STATUS_ACTIVE,&dev->status);
+	if( atomic_read(&dev->counter) % 5 == 0 ) {
+		set_bit(STATUS_ERROR,&dev->status);
+	}
+	printk(KERN_INFO "Device ID : %u, Counter : %d, Status : %lx\n",dev->ID,atomic_read(&dev->counter),dev->status);
+}
+ 
+static void display_devices(void) {
+	struct device *dev;
+	list_for_each_entry(dev,&device_list,list) {
+		printk(KERN_INFO " Device ID : %u, counter : %d, Status : %lx\n",dev->ID,atomic_read(&dev->counter),dev->status);
+	}
+}
+ 
+ 
+static int __init device_list_init(void) {
+    int i;
+    struct device *dev;
+    for (i = 1; i <= 10; i++) {
+    	add_device(i);
+    }
+    list_for_each_entry(dev,&device_list,list) {
+    	update_device(dev);
+    }
+    display_devices();
+    return 0;
+}
+static void __exit device_list_exit(void) {
+    struct device *dev, *tmp;
+    list_for_each_entry_safe(dev, tmp, &device_list, list) {
+        list_del(&dev->list);
+        kfree(dev);
+    }
+    printk(KERN_INFO "Device list module exit\n");
+}
+module_init(device_list_init);
+module_exit(device_list_exit);
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Your Name");
+MODULE_DESCRIPTION("A module to maintain a List of Devices with Atomic Status Flags");
